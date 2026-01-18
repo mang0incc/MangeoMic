@@ -1,0 +1,8 @@
+Package: manmic
+Version: 0.1.0
+Section: sound
+Priority: optional
+Architecture: amd64
+Depends: pipewire, pipewire-pulse
+Maintainer: mang0
+Description: virtual mic program to connect your phone's mic to pc

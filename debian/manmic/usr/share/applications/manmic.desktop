@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=ManMic
+Comment=Virtual Microphone (PipeWire)
+Exec=manmic
+Icon=audio-input-microphone
+Terminal=true
+Type=Application
+Categories=Audio;Utility;

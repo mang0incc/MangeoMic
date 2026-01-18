@@ -1,0 +1,17 @@
+
+[Desktop Entry]
+
+Type=Application
+
+Name=MangeoMic
+
+Comment=Android as a Mic
+
+Exec=/usr/bin/mangeomic
+
+Icon=mangeomic
+
+Terminal=false
+
+Categories=AudioVideo;Audio;
+

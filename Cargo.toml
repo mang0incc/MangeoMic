@@ -1,0 +1,22 @@
+[package]
+name = "mangeomic"
+version = "0.2.0"
+edition = "2021"
+
+[dependencies]
+eframe = "0.27"
+egui = "0.27"
+egui_plot = "0.27"
+chrono = "0.4"
+
+[package.metadata.deb]
+maintainer = "mang0 <Tunctas@proton.me"
+copyright = "2026, mang0"
+depends = "pulseaudio-utils, libx11-6, libvulkan1" 
+section = "utils"
+priority = "optional"
+assets = [
+    ["target/release/mangeomic", "usr/bin/mangeomic", "755"],
+    ["assets/mangeomic.desktop", "usr/share/applications/mangeomic.desktop", "644"],
+    ["assets/icon.png", "usr/share/icons/hicolor/256x256/apps/mangeomic.png", "644"],
+]
