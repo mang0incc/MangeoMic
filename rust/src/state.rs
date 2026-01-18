@@ -19,7 +19,7 @@ impl AppState {
             paired: false,
             streaming: false,
             phone_ip: None,
-            logs: vec!["🚀 Sistem hazır.".to_string()],
+            logs: vec![" Sistem hazır.".to_string()],
             last_latency: None,
             last_heartbeat: Instant::now(),
             packet_count: 0,
@@ -27,6 +27,7 @@ impl AppState {
         }
     }
 
+    // KARANLIK BU SOKAKLARDA ELİMİ TUTAN YOK
     pub fn add_log(&mut self, msg: &str) {
         let timestamp = chrono::Local::now().format("%H:%M:%S").to_string();
         self.logs.push(format!("[{}] {}", timestamp, msg));

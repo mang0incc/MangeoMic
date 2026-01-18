@@ -12,7 +12,6 @@ struct MangeoMicApp {
     state: Arc<Mutex<AppState>>,
 }
 
-// Default implementasyonu AppState::new() kullanacak şekilde güncellendi
 impl Default for MangeoMicApp {
     fn default() -> Self {
         Self {
@@ -23,26 +22,24 @@ impl Default for MangeoMicApp {
 
 impl eframe::App for MangeoMicApp {
     fn update(&mut self, ctx: &egui::Context, _: &mut eframe::Frame) {
-        // Grafiğin akıcı olması için yenileme (60 FPS civarı)
+        // ILK DEGIL SON OLMAZ
         ctx.request_repaint_after(std::time::Duration::from_millis(16));
         
         let mut state = self.state.lock().unwrap();
 
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.vertical_centered(|ui| {
-                ui.heading("🎤 MangeoMic Desktop");
+                ui.heading("MangeoMic Desktop");
             });
             ui.add_space(5.0);
             ui.separator();
-
-            // 📡 DURUM GÖSTERGESİ
             ui.horizontal(|ui| {
                 let (status_text, status_color) = if state.paired && state.streaming {
-                    ("✅ YAYINDA", egui::Color32::GREEN)
+                    ("YAYINDA", egui::Color32::GREEN)
                 } else if state.paired {
-                    ("📱 BAĞLANDI", egui::Color32::from_rgb(100, 200, 255))
+                    (" BAĞLANDI", egui::Color32::from_rgb(100, 200, 255))
                 } else if state.pairing_active {
-                    ("🔄 ARANIYOR...", egui::Color32::YELLOW)
+                    ("ARANIYOR...", egui::Color32::YELLOW)
                 } else {
                     ("⏸ HAZIR", egui::Color32::GRAY)
                 };
@@ -56,18 +53,17 @@ impl eframe::App for MangeoMicApp {
                 }
             });
 
+            // HAYAT YALNIZ YASANMAZ
             ui.add_space(10.0);
-
-            // 🎯 KONTROL BUTONLARI
             if !state.paired {
-                let button_text = if state.pairing_active { "⏹ ARAMAYI DURDUR" } else { "📡 TELEFONU ARA" };
+                let button_text = if state.pairing_active { "⏹ ARAMAYI DURDUR" } else { " TELEFONU ARA" };
                 let color = if state.pairing_active { egui::Color32::from_rgb(200, 50, 50) } else { egui::Color32::from_rgb(50, 100, 200) };
                 
                 if ui.add(egui::Button::new(button_text).fill(color).min_size(egui::Vec2::new(ui.available_width(), 40.0))).clicked() {
                     state.pairing_active = !state.pairing_active;
                     if state.pairing_active {
                         network::start_pairing(self.state.clone());
-                        state.add_log("📡 Telefon arama başlatıldı...");
+                        state.add_log(" Telefon arama başlatıldı...");
                     }
                 }
             } else {
@@ -86,14 +82,15 @@ impl eframe::App for MangeoMicApp {
                         }
                     }
 
-                    if ui.add(egui::Button::new("🔌 KES").min_size(egui::Vec2::new(ui.available_width(), 40.0))).clicked() {
+                    // GIDENIN ARDINDAN BAKIP AĞLANMAZ
+                    if ui.add(egui::Button::new(" KES").min_size(egui::Vec2::new(ui.available_width(), 40.0))).clicked() {
                         if let Some(ip) = &state.phone_ip {
                             network::send_disconnect_to_phone(ip.clone());
                         }
                         state.paired = false;
                         state.streaming = false;
                         state.pairing_active = false;
-                        state.add_log("🔌 Bağlantı kesildi.");
+                        state.add_log(" Bağlantı kesildi.");
                     }
                 });
             }
@@ -101,8 +98,7 @@ impl eframe::App for MangeoMicApp {
             ui.add_space(10.0);
             ui.separator();
 
-            // 📈 CANLI GECİKME GRAFİĞİ
-            ui.label("📊 Bağlantı Kalitesi (Gecikme)");
+            ui.label(" Bağlantı Kalitesi (Gecikme)");
             
             let points: PlotPoints = state.latency_history.iter().enumerate()
                 .map(|(i, &lat)| [i as f64, lat])
@@ -128,7 +124,6 @@ impl eframe::App for MangeoMicApp {
 
             ui.add_space(5.0);
 
-            // 🔧 SİSTEM BİLGİLERİ
             ui.horizontal(|ui| {
                 ui.label("Gecikme:");
                 ui.strong(format!("{} ms", last_lat));
@@ -139,14 +134,12 @@ impl eframe::App for MangeoMicApp {
                 let mic_ready = audio::check_virtual_mic();
                 ui.colored_label(
                     if mic_ready { egui::Color32::GREEN } else { egui::Color32::RED },
-                    if mic_ready { "✅ HAZIR" } else { "❌ HATA" }
+                    if mic_ready { " HAZIR" } else { " HATA" }
                 );
             });
 
             ui.separator();
-
-            // 📝 LOG ALANI (Vec<String> yapısına göre düzeltildi)
-            ui.label("📝 Sistem Kayıtları:");
+            ui.label(" Sistem Kayıtları:");
             let mut full_log = state.logs.join("\n");
             egui::ScrollArea::vertical()
                 .max_height(100.0)
@@ -156,15 +149,15 @@ impl eframe::App for MangeoMicApp {
                         egui::TextEdit::multiline(&mut full_log)
                             .desired_width(ui.available_width())
                             .font(egui::TextStyle::Monospace)
-                            .interactive(false) // Sadece okunabilir
+                            .interactive(false)
                     );
                 });
         });
     }
 }
 
+// KIMSESIZ CARESIZ
 fn main() -> eframe::Result<()> {
-    // Sanal mikrofonu hazırla
     let _ = audio::ensure_virtual_mic();
 
     let options = eframe::NativeOptions {
@@ -174,6 +167,7 @@ fn main() -> eframe::Result<()> {
         ..Default::default()
     };
     
+    // BI ŞEY YOK HİÇ KİMSE YOK
     eframe::run_native(
         "MangeoMic Desktop",
         options,

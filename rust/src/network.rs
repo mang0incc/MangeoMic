@@ -11,7 +11,7 @@ const HI_MSG: &[u8] = b"MANGEO_HI";
 const OK_MSG: &[u8] = b"MANGEO_OK";
 const DISCONNECT_MSG: &[u8] = b"MANGEO_BYE";
 const HEARTBEAT_MSG: &[u8] = b"MANGOVAR";
-const KEEP_ALIVE_MSG: &[u8] = b"MANGOHI"; // Yeni sinyal
+const KEEP_ALIVE_MSG: &[u8] = b"MANGOHI"; 
 
 pub fn start_pairing(state: Arc<Mutex<AppState>>) {
     let state_clone = state.clone();
@@ -31,7 +31,7 @@ pub fn start_pairing(state: Arc<Mutex<AppState>>) {
                     let mut st = state_clone.lock().unwrap();
                     st.paired = true;
                     st.phone_ip = Some(src.ip().to_string());
-                    st.add_log(&format!("✅ {} ile eşleşildi", src.ip()));
+                    st.add_log(&format!(" {} ile eşleşildi", src.ip()));
                     break;
                 }
             }
@@ -40,11 +40,13 @@ pub fn start_pairing(state: Arc<Mutex<AppState>>) {
     });
 }
 
+// BİR ŞEY FARK ETMEZ
 pub fn send_disconnect_to_phone(phone_ip: String) {
     let socket = UdpSocket::bind("0.0.0.0:0").ok();
     let _ = socket.map(|s| s.send_to(DISCONNECT_MSG, format!("{}:50006", phone_ip)));
 }
 
+// ELİMDEN HİÇBİR ŞEY GELMEZ HİÇBİR ÇAREM YOK
 pub fn start_audio_listener(state: Arc<Mutex<AppState>>) {
     let state_clone = state.clone();
     thread::spawn(move || {
@@ -71,6 +73,7 @@ pub fn start_audio_listener(state: Arc<Mutex<AppState>>) {
             st.last_heartbeat = Instant::now();
         }
 
+        // KARANLIK BU SOKAKLARDA SESİMİ DUYAN YOK
         loop {
             if !state_clone.lock().unwrap().streaming { break; }
 
@@ -88,7 +91,7 @@ pub fn start_audio_listener(state: Arc<Mutex<AppState>>) {
                     if data == DISCONNECT_MSG {
                         st.paired = false;
                         st.streaming = false;
-                        st.add_log("🔌 Telefon bağlantıyı kesti.");
+                        st.add_log(" Telefon bağlantıyı kesti.");
                         break;
                     } else if data == HEARTBEAT_MSG {
                         continue; 
@@ -109,13 +112,14 @@ pub fn start_audio_listener(state: Arc<Mutex<AppState>>) {
                         let mut st_write = state_clone.lock().unwrap();
                         st_write.paired = false;
                         st_write.streaming = false;
-                        st_write.add_log("⚠️ İletişim koptu: Paket gelmiyor.");
+                        st_write.add_log(" İletişim koptu: Paket gelmiyor.");
                         break;
                     }
                 }
                 _ => {}
             }
         }
+        // ELİMDEN HİÇBİR ŞEY GELMEZ HİÇBİR ÇAREM YOK
         let _ = child.kill();
     });
 }
